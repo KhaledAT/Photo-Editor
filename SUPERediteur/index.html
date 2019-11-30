@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Super Éditeur de Photos 3000</title>
+        <style>
+            body {
+                background-color: #F5F5F5;
+                color: black;
+                width: 95%;
+                min-width: 500px;
+                margin: auto;
+            }
+            h1 {
+                text-align: center;
+                font-family: Purisa, 'Comic Sans', 'Comic Sans MS', sans;
+            }
+            h2 {
+                font-family: sans;
+                text-align: left;
+            }
+            canvas {
+                display: block;
+                border: 2px dashed #AAA;
+                margin: 0 auto;
+                max-width: 100%;
+            }
+            canvas.file-hover
+            {
+                border: 6px solid lightgreen;
+                opacity: 0.8;
+                margin: -4px auto;
+            }
+            #container {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin: 30px 0;
+            }
+            #container > div {
+                display: flex;
+                flex-direction: column;
+            }
+            #image-frame {
+                flex-grow: 1;
+                justify-content: start;
+            }
+            #image-label {
+                text-align: center;
+                font-style: italic;
+            }
+            #menu-filtres {
+                margin: 0 15px;
+                justify-content: space-between;
+                background-color: rgba(0,0,0,0.05);
+                padding: 20px 10px;
+            }
+            button {
+                background-color: #EBEBEB;
+                font-size: large;
+                border: 1px solid #AAA;
+                width: 140px;
+                height: 80px;
+            }
+            #menu-filtres button {
+                border-left: none;
+            }
+            #menu-filtres button:first-child {
+                border-left: 1px solid #AAA;
+            }
+            .group > div {
+                display: flex;
+                flex-direction: row;
+                justify-content: start;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Super Éditeur de Photos 3000</h1>
+        <div id="container">
+            <div id="menu-filtres">
+                <div class="group">
+                    <h2>Fichier</h2>
+                    <div>
+                        <button id="exporter">Enregistrer l'image</button>
+                        <button id="annuler">Annuler les modifications</button>
+                    </div>
+                </div>
+                <div class="group">
+                    <h2>Couleurs</h2>
+                    <div>
+                        <button id="noirEtBlanc">Noir et blanc</button>
+                        <button id="reduire-luminosite">Augmenter la clarté</button>
+                        <button id="augmenter-luminosite" style="margin-bottom: 10px">Réduire la clarté</button>
+                    </div>
+                </div>
+                <div class="group">
+                    <h2>Opérations avancées</h2>
+                    <div>
+                        <button id="flou">Flou</button>
+                        <button id="detection-contours">Détection de contours</button>
+                    </div>
+                </div>
+            </div>
+            <div id="image-frame">
+                <p id="image-label">Glissez et déposez une image ou double-cliquez sur le rectangle</p>
+                <canvas id="canvas" width="500" height="500"></canvas>
+                <input id="file-input" type="file" style="visibility: hidden" />
+            </div>
+        </div>
+    </body>
+    <script src="js/img.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/tp1.js"></script>
+</html>

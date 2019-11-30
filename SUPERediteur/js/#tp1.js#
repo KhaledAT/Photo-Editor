@@ -1,0 +1,231 @@
+/* Auteurs: Joseph Al-chami (20022171), Khaled Adel Tetbirt (20161653)
+
+   Ce programme sert a modifier des photos fournies par l'utilisateur
+   et les soumettre a certains effets visuels, comme le flou et la
+   transformation en noir et blanc.
+*/
+
+// La fonction creerMatrice sert a creer des matrices qui constitueront
+// la nouvelle image modifiee. On leur introduit des valeurs r,g et b 
+// de 0 afin de les modifier ensuite.
+
+ function creerMatrice(nbRangees, nbColonnes) {
+    var resultat = Array(nbRangees);
+    for (var i=0; i<nbRangees; i++) {
+        resultat[i] = Array(nbColonnes);
+    }
+	for(var l = 0; l < nbRangees; l++) {
+			for(var c = 0; c < nbColonnes; c++) {
+				resultat[l][c] = {r: 0, g: 0, b: 0}
+			}
+	}
+    return resultat;
+};
+
+// La fonction luminance prend 1 pixel et redonne la valeurs
+// de sa luminance.
+
+function luminance (pixel) {
+	return (0.2126*pixel.r + 0.7152*pixel.g + 0.0722*pixel.b);
+ }
+
+function noirEtBlanc(imageOriginale) {
+    console.log('TODO'); // TODO : ComplÃ©ter cette fonction
+	
+	// On cree une matrice vierge afin de constituer la nouvelle image.
+	
+	var imageNoirEtBlanc = creerMatrice(imageOriginale.length, imageOriginale[0].length);
+	
+	// On utilise une boucle double afin de passer par tous les pixels de l'image,
+	// l pour ligne et c pour colonne.
+	
+	for(var l = 0; l < imageOriginale.length; l++) {
+		for(var c = 0; c < imageOriginale[0].length; c++) {
+			
+			// Les valeurs obtenues par luminance sont remplacees dans la 
+			// nouvelle matrice.
+			
+			imageNoirEtBlanc[l][c].r = luminance(imageOriginale[l][c]);
+			imageNoirEtBlanc[l][c].g = luminance(imageOriginale[l][c]);
+			imageNoirEtBlanc[l][c].b = luminance(imageOriginale[l][c]);
+		}
+	}
+	return (imageNoirEtBlanc);
+}
+
+function modifierClarte (pixel, quantite) {
+	x = ((Math.pow((pixel.r/255), quantite))*255);
+	y = ((Math.pow((pixel.g/255), quantite))*255);
+	z = ((Math.pow((pixel.b/255), quantite))*255);
+	return({r: x, g: y, b: z});
+}
+
+function correctionClarte(imageOriginale, quantite) {
+    console.log('TODO'); // TODO : ComplÃ©ter cette fonction
+	var imageCorrigee = creerMatrice(imageOriginale.length, imageOriginale[0].length);
+	for(var l = 0; l < imageOriginale.length; l++) {
+		for(var c = 0; c < imageOriginale[0].length; c++) {
+			imageCorrigee[l][c] = modifierClarte(imageOriginale[l][c], quantite);
+		}
+	}
+	return(imageCorrigee);			
+}
+
+function flou(imageOriginale, taille) {
+    console.log('TODO');
+	var imageFloutee = creerMatrice(imageOriginale.length, imageOriginale[0].length);
+	for(var l = 0; l < imageOriginale.length; l++) {
+		for(var c = 0; c < imageOriginale[0].length; c++) {
+			var x = 0;
+			var y = 0;
+			var z = 0;
+			
+			// Si la taille du carre est impaire.
+			
+			if(taille%2 !== 0) {
+				for(var i = l - Math.floor(taille/2) ; i <= l + Math.floor(taille/2); i++) {
+					for(var n = c - Math.floor(taille/2); n <= c + Math.floor(taille/2); n++) {
+						
+						// Ce if sert a s'assurer que les pixels utilises
+						// se trouvent biens a l'interieur de l'image.
+						
+						if (i < imageOriginale.length && i >= 0 && n < imageOriginale[0].length && n > 0) {
+							x = ((1/(taille*taille)) * imageOriginale[i][n].r) + x;
+							y = ((1/(taille*taille)) * imageOriginale[i][n].g) + y;
+							z = ((1/(taille*taille)) * imageOriginale[i][n].b) + z;
+						}
+						
+						// Sinon, ces pixels sont ignores (=0).
+						
+						else {
+							x = x;
+							y = y;
+							z = z;
+						}
+					}
+				}
+				
+				// On reconstitue la nouvelle image.
+				
+				imageFloutee[l][c] = {r: x, g: y, b: z};
+			}
+			
+			// Si la taille du carre est paire.
+			
+			else{
+				for(var i = l - (taille/2) ; i <= l + (taille/2) - 1; i++) {
+					for(var n = c - (taille/2); n <= c + (taille/2) - 1; n++) {
+						if (i < imageOriginale.length && i >= 0 && n < imageOriginale[0].length && n > 0) {
+							x = ((1/(taille*taille)) * imageOriginale[i][n].r) + x ;
+							y = ((1/(taille*taille)) * imageOriginale[i][n].g) + y ;
+							z = ((1/(taille*taille)) * imageOriginale[i][n].b) + z ;
+						}
+						else {
+							x = x;
+							y = y;
+							z = z;
+						}
+					}
+				}
+				imageFloutee[l][c] = {r: x, g: y, b: z};
+			}
+		}
+	}
+	return(imageFloutee)
+}
+
+function detectionContours(imageOriginale) {
+	console.log('TODO');
+    var imageNoirEtBlanc = noirEtBlanc(imageOriginale);
+	
+	// imageContours est une matrice vide que l'on reconstituera.
+	
+	var imageContours = creerMatrice(imageOriginale.length, imageOriginale[0].length);
+	for(var l = 1; l < imageOriginale.length -1; l++) {
+		for(var c = 1; c < imageOriginale[0].length -1; c++) {
+			var variationX =-1*imageNoirEtBlanc[l-1][c-1].r + 1*imageNoirEtBlanc[l-1][c+1].r + 
+							-2*imageNoirEtBlanc[l][c-1].r + 2*imageNoirEtBlanc[l][c+1].r + 
+							-1*imageNoirEtBlanc[l+1][c-1].r + 1*imageNoirEtBlanc[l+1][c+1].r;
+			
+			var variationY =-1*imageNoirEtBlanc[l-1][c-1].r + -2*imageNoirEtBlanc[l-1][c].r + 
+							-1*imageNoirEtBlanc[l-1][c+1].r + 1*imageNoirEtBlanc[l+1][c-1].r + 
+							2*imageNoirEtBlanc[l+1][c].r + 1*imageNoirEtBlanc[l+1][c+1].r;
+							
+			var intensiteContour = Math.max(Math.abs(variationX),Math.abs(variationY));
+			
+			if(intensiteContour <= 255) {
+				imageContours[l][c].r = intensiteContour;
+				imageContours[l][c].g = intensiteContour;
+				imageContours[l][c].b = intensiteContour;
+			}
+			
+			// Dans le cas ou l'intensite est plus grande que 255.
+			
+			else {
+				imageContours[l][c].r = 255;
+				imageContours[l][c].g = 255;
+				imageContours[l][c].b = 255;
+			}
+		}
+	}
+	return(imageContours);
+}
+
+function tests() {
+	console.log('TODO');
+    luminance({r: 0, g: 1, b: 0}) == 0.7152 ;
+	(creerMatrice(4,4)[0][0]) == {r: 0, g: 0, b: 0};
+	
+	noirEtBlanc({r: 255, g: 255, b: 255}) == luminance({r: 255, g: 255, b: 255});
+	
+	modifierClarte ({r: 255, g: 255, b: 255}, 2) == {r: 255, g: 255, b: 255};
+	
+	correctionClarte({r: 25, g: 25, b: 25}, 2) == modifierClarte({r: 25, g: 25, b: 25}, 2);
+	
+	flou([[{r: 0, g: 0, b: 0}, {r: 0, g: 0, b: 0}, {r: 0, g: 0, b: 0}],[{r: 0, g: 0, b: 0}
+	, {r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}],[{r: 0, g: 0, b: 0}, {r: 0, g: 0, b: 0}, {r: 0, g: 0, b: 0}]]) == 
+	([[{r: (1/9)*255, g: (1/9)*255, b: (1/9)*255}, {r: (1/9)*255, g: (1/9)*255, b: (1/9)*255}, 
+	{r: (1/9)*255, g: (1/9)*255, b: (1/9)*255}],[{r: (1/9)*255, g: (1/9)*255, b: (1/9)*255},
+	{r: (1/9)*255, g: (1/9)*255, b: (1/9)*255}, {r: (1/9)*255, g: (1/9)*255, b: (1/9)*255}],
+	[{r: (1/9)*255, g: (1/9)*255, b: (1/9)*255}, {r: (1/9)*255, g: (1/9)*255, b: (1/9)*255}, 
+	 {r: (1/9)*255, g: (1/9)*255, b: (1/9)*255}]]);
+}
+
+tests();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
