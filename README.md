@@ -9,5 +9,8 @@ This program takes an image as input and outputs a lightly edited copy. It is im
 * Implementing java code inside an HTML website
 * Basic image edition through image-matrix decomposition
 
+# Basic Directions
+
+* Run the index.html with any browser
 
 
